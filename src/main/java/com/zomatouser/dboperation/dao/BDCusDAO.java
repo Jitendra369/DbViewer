@@ -1,8 +1,10 @@
 package com.zomatouser.dboperation.dao;
 
 import com.zomatouser.dboperation.dto.DatabaseNameDto;
+import com.zomatouser.dboperation.dto.TableConstraintInfo;
 import com.zomatouser.dboperation.dto.TableDescInfoBean;
 import com.zomatouser.dboperation.factory.DataBaseNameFactory;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ public class BDCusDAO {
     private static final String GET_ALL_TABLES = "SHOW TABLES";
     private static final String SHOW_ALL_DATA_FROM_DB = "SELECT * FROM ";
     private static final String DESCRIBE_TABLE = "DESC ";
+    private String GET_CONSTRAINT = "SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE CONSTRAINT_SCHEMA = ? ";
 
 
     public List<DatabaseNameDto> getAllDBNames() {
@@ -49,7 +52,7 @@ public class BDCusDAO {
         List<List<TableDescInfoBean>> allTableDesc = new ArrayList<>();
         List<Map<String, List<TableDescInfoBean>>> allTableDescMapList = new ArrayList<>();
 
-        tableNames.stream().filter(Objects::nonNull).forEach(tablename ->{
+        tableNames.stream().filter(Objects::nonNull).forEach(tablename -> {
             Map<String, List<TableDescInfoBean>> tableDescMap = new HashMap<>();
             tableDescMap.put(tablename, gettableInfo(tablename));
             allTableDescMapList.add(tableDescMap);
@@ -73,6 +76,35 @@ public class BDCusDAO {
             tableDescInfoBeans.add(tableDescInfoBean);
         });
         return tableDescInfoBeans;
+    }
+
+    public List<TableConstraintInfo> getConstraintInfo() {
+
+        if (DATABASE_NAME == null || DATABASE_NAME.isEmpty()) {
+            log.error("database name is null or empty");
+        }
+        List<TableConstraintInfo> constraintInfos = new ArrayList<>();
+        if (log.isDebugEnabled()) {
+            log.info("fetching database constraints");
+        }
+        List<Map<String, Object>> constaintList = jdbcTemplate.queryForList(GET_CONSTRAINT, DATABASE_NAME);
+        constaintList.stream().forEach(tableConstraintInfo -> {
+            TableConstraintInfo constraintInfo = new TableConstraintInfo();
+            constraintInfo.setCONSTRAINT_CATALOG(tableConstraintInfo.get("CONSTRAINT_CATALOG") != null ? (String) tableConstraintInfo.get("CONSTRAINT_CATALOG") : "");
+            constraintInfo.setCONSTRAINT_SCHEMA(tableConstraintInfo.get("CONSTRAINT_SCHEMA") != null ? (String) tableConstraintInfo.get("CONSTRAINT_SCHEMA") : "");
+            constraintInfo.setCONSTRAINT_NAME(tableConstraintInfo.get("CONSTRAINT_NAME") != null ? (String) tableConstraintInfo.get("CONSTRAINT_NAME") : "");
+            constraintInfo.setTABLE_CATALOG(tableConstraintInfo.get("TABLE_CATALOG") != null ? (String) tableConstraintInfo.get("TABLE_CATALOG") : "");
+            constraintInfo.setTABLE_SCHEMA(tableConstraintInfo.get("TABLE_SCHEMA") != null ? (String) tableConstraintInfo.get("TABLE_SCHEMA") : "");
+            constraintInfo.setTABLE_NAME(tableConstraintInfo.get("TABLE_NAME") != null ? (String) tableConstraintInfo.get("TABLE_NAME") : "");
+            constraintInfo.setCOLUMN_NAME(tableConstraintInfo.get("COLUMN_NAME") != null ? (String) tableConstraintInfo.get("COLUMN_NAME") : "");
+            constraintInfo.setORDINAL_POSITION(tableConstraintInfo.get("ORDINAL_POSITION") != null ? (Long) tableConstraintInfo.get("ORDINAL_POSITION") : null);
+            constraintInfo.setPOSITION_IN_UNIQUE_CONSTRAINT(tableConstraintInfo.get("POSITION_IN_UNIQUE_CONSTRAINT") != null ? (Long) tableConstraintInfo.get("POSITION_IN_UNIQUE_CONSTRAINT") : null);
+            constraintInfo.setREFERENCED_TABLE_SCHEMA(tableConstraintInfo.get("REFERENCED_TABLE_SCHEMA") != null ? (String) tableConstraintInfo.get("REFERENCED_TABLE_SCHEMA") : "");
+            constraintInfo.setREFERENCED_TABLE_NAME(tableConstraintInfo.get("REFERENCED_TABLE_NAME") != null ? (String) tableConstraintInfo.get("REFERENCED_TABLE_NAME") : "");
+            constraintInfo.setREFERENCED_COLUMN_NAME(tableConstraintInfo.get("REFERENCED_COLUMN_NAME") != null ? (String) tableConstraintInfo.get("REFERENCED_COLUMN_NAME") : "");
+            constraintInfos.add(constraintInfo);
+        });
+        return constraintInfos;
     }
 
 

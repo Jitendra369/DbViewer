@@ -1,6 +1,7 @@
 package com.zomatouser.dboperation.controller;
 
 import com.zomatouser.dboperation.dto.DatabaseNameDto;
+import com.zomatouser.dboperation.dto.TableConstraintInfo;
 import com.zomatouser.dboperation.dto.TableDescInfoBean;
 import com.zomatouser.dboperation.models.Customer;
 import com.zomatouser.dboperation.service.Customerservice;
@@ -42,5 +43,10 @@ public class DatabaseController {
     @GetMapping("/tableInfo")
     public List<Map<String, List<TableDescInfoBean>>> getTableInfo(){
         return Optional.ofNullable(dataBaseService.getTableInformation()).orElseGet(ArrayList::new);
+    }
+
+    @GetMapping("/constraint")
+    public List<TableConstraintInfo> getConstraint(){
+        return dataBaseService.getConstraintValue();
     }
 }

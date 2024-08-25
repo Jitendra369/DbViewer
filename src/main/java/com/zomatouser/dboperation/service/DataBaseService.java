@@ -2,6 +2,7 @@ package com.zomatouser.dboperation.service;
 
 import com.zomatouser.dboperation.dao.BDCusDAO;
 import com.zomatouser.dboperation.dto.DatabaseNameDto;
+import com.zomatouser.dboperation.dto.TableConstraintInfo;
 import com.zomatouser.dboperation.dto.TableDescInfoBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,5 +35,9 @@ public class DataBaseService {
             log.error("No Table found the dataBase");
         }
         return null;
+    }
+
+    public List<TableConstraintInfo> getConstraintValue(){
+        return dbCustomDao.getConstraintInfo();
     }
 }
