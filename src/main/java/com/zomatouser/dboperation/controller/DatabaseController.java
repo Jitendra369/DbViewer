@@ -8,6 +8,7 @@ import com.zomatouser.dboperation.service.Customerservice;
 import com.zomatouser.dboperation.service.DataBaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,5 +49,10 @@ public class DatabaseController {
     @GetMapping("/constraint")
     public List<TableConstraintInfo> getConstraint(){
         return dataBaseService.getConstraintValue();
+    }
+
+    @GetMapping("/customer/{id}")
+    public Customer getCustomerById(@PathVariable String id){
+        return customerservice.findCustomerById(id);
     }
 }

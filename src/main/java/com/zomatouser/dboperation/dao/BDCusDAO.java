@@ -88,7 +88,7 @@ public class BDCusDAO {
             log.info("fetching database constraints");
         }
         List<Map<String, Object>> constaintList = jdbcTemplate.queryForList(GET_CONSTRAINT, DATABASE_NAME);
-        constaintList.stream().forEach(tableConstraintInfo -> {
+        constaintList.forEach(tableConstraintInfo -> {
             TableConstraintInfo constraintInfo = new TableConstraintInfo();
             constraintInfo.setCONSTRAINT_CATALOG(tableConstraintInfo.get("CONSTRAINT_CATALOG") != null ? (String) tableConstraintInfo.get("CONSTRAINT_CATALOG") : "");
             constraintInfo.setCONSTRAINT_SCHEMA(tableConstraintInfo.get("CONSTRAINT_SCHEMA") != null ? (String) tableConstraintInfo.get("CONSTRAINT_SCHEMA") : "");
