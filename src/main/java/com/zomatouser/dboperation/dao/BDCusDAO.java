@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -73,6 +74,22 @@ public class BDCusDAO {
             tableDescInfoBeans.add(tableDescInfoBean);
         });
         return tableDescInfoBeans;
+    }
+
+    public List<String> getTableFieldsInformation(String tableName){
+        List<String> fieldNames = new ArrayList<>();
+        if (tableName != null && !tableName.isEmpty()){
+            StringBuilder sql = new StringBuilder(DESCRIBE_TABLE).append(tableName);
+            List<Map<String, Object>> result = jdbcTemplate.queryForList(sql.toString());
+            if (!CollectionUtils.isEmpty(result)){
+                for(Map<String, Object> resultMap : result){
+                   fieldNames.add( resultMap.get ("Field") != null ? (String) resultMap.get("Field") : "");
+                }
+            }else{
+                log.info("NO table present of the given name : {} ", tableName);
+            }
+        }
+        return fieldNames;
     }
 
 

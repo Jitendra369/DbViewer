@@ -6,9 +6,7 @@ import com.zomatouser.dboperation.models.Customer;
 import com.zomatouser.dboperation.service.Customerservice;
 import com.zomatouser.dboperation.service.DataBaseService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/db")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class DatabaseController {
 
     private final DataBaseService dataBaseService;
@@ -42,5 +41,10 @@ public class DatabaseController {
     @GetMapping("/tableInfo")
     public List<Map<String, List<TableDescInfoBean>>> getTableInfo(){
         return Optional.ofNullable(dataBaseService.getTableInformation()).orElseGet(ArrayList::new);
+    }
+
+    @GetMapping("/fieldInfo/{tableName}")
+    public List<String> getTableInfo(@PathVariable String tableName){
+        return dataBaseService.getTableFieldInfoByTableName(tableName);
     }
 }
