@@ -1,12 +1,20 @@
 package com.zomatouser.dboperation.controller;
 
 import com.zomatouser.dboperation.dto.DatabaseNameDto;
+import com.zomatouser.dboperation.dto.TableConstraintInfo;
 import com.zomatouser.dboperation.dto.TableDescInfoBean;
 import com.zomatouser.dboperation.models.Customer;
 import com.zomatouser.dboperation.service.Customerservice;
 import com.zomatouser.dboperation.service.DataBaseService;
 import lombok.RequiredArgsConstructor;
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.*;
+=======
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+>>>>>>> origin/localdev
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +51,19 @@ public class DatabaseController {
         return Optional.ofNullable(dataBaseService.getTableInformation()).orElseGet(ArrayList::new);
     }
 
+<<<<<<< HEAD
     @GetMapping("/fieldInfo/{tableName}")
     public List<String> getTableInfo(@PathVariable String tableName){
         return dataBaseService.getTableFieldInfoByTableName(tableName);
+=======
+    @GetMapping("/constraint")
+    public List<TableConstraintInfo> getConstraint(){
+        return dataBaseService.getConstraintValue();
+    }
+
+    @GetMapping("/customer/{id}")
+    public Customer getCustomerById(@PathVariable String id){
+        return customerservice.findCustomerById(id);
+>>>>>>> origin/localdev
     }
 }

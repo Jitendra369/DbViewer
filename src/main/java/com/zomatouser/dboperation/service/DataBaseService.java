@@ -2,6 +2,7 @@ package com.zomatouser.dboperation.service;
 
 import com.zomatouser.dboperation.dao.BDCusDAO;
 import com.zomatouser.dboperation.dto.DatabaseNameDto;
+import com.zomatouser.dboperation.dto.TableConstraintInfo;
 import com.zomatouser.dboperation.dto.TableDescInfoBean;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,12 @@ public class DataBaseService {
         return null;
     }
 
+<<<<<<< HEAD
     public List<String> getTableFieldInfoByTableName(String tableName){
         return Optional.ofNullable(dbCustomDao.getTableFieldsInformation(tableName)).orElseGet(ArrayList::new);
+=======
+    public List<TableConstraintInfo> getConstraintValue(){
+        return dbCustomDao.getConstraintInfo();
+>>>>>>> origin/localdev
     }
 }
